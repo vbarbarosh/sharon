@@ -11,7 +11,8 @@ function sheet_render(rows)
                     case 'number':
                         return {userEnteredValue: {numberValue: value}};
                     default:
-                        return {userEnteredValue: {stringValue: String(value||'')}};
+                        // Invalid sheets[0].data[0]: Your input contains more than the maximum of 50000 characters in a single cell.
+                        return {userEnteredValue: {stringValue: String(value||'').substr(0, 50000)}};
                     }
                 }),
             };
