@@ -1,0 +1,32 @@
+#!/bin/bash
+
+# http://www.gnu.org/software/bash/manual/bash.html#The-Set-Builtin
+# http://redsymbol.net/articles/unofficial-bash-strict-mode/
+set -o nounset -o errexit -o pipefail
+
+script=`realpath $0`
+scriptdir=`dirname $script`
+scriptname=`basename $script`
+
+cd $scriptdir/..
+source .env
+
+# https://developers.google.com/sheets/api/guides/authorizing#OAuth2Authorizing
+scope="https://www.googleapis.com/auth/drive.file"
+
+# Request OAuth2 Code
+# https://developers.google.com/identity/protocols/oauth2/web-server#creatingclient
+if test -z "${1-}"; then
+    xdg-open "https://accounts.google.com/o/oauth2/v2/auth?client_id=$CLIENT_ID&redirect_uri=$REDIRECT_URI&response_type=code&scope=$scope&prompt=consent&access_type=offline"
+    exit
+fi
+
+# Exchange authorization code for refresh and access tokens
+# https://developers.google.com/identity/protocols/oauth2/web-server#exchange-authorization-code
+curl https://oauth2.googleapis.com/token \
+    -d client_id=$CLIENT_ID \
+    -d client_secret=$CLIENT_SECRET \
+    -d code=$1 \
+    -d grant_type=authorization_code \
+    -d redirect_uri=$REDIRECT_URI
+echo

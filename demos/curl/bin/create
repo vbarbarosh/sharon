@@ -1,0 +1,39 @@
+#!/bin/bash
+
+# http://www.gnu.org/software/bash/manual/bash.html#The-Set-Builtin
+# http://redsymbol.net/articles/unofficial-bash-strict-mode/
+set -o nounset -o errexit -o pipefail
+
+script=`realpath $0`
+scriptdir=`dirname $script`
+scriptname=`basename $script`
+
+cd $scriptdir/..
+
+source .env
+
+# https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/create
+curl https://sheets.googleapis.com/v4/spreadsheets \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H 'Content-Type: application/json' \
+  -d '{
+          "properties":{"title":"foo"},
+          "sheets":[
+              {"properties":{"title":"sheet 1"},"data":[{"rowData":[
+                {"values":[
+                    {"userEnteredValue":{"stringValue":"=111"}},
+                    {"userEnteredValue":{"stringValue":"=222"}},
+                    {"userEnteredValue":{"stringValue":"=333"}},
+                    {"userEnteredValue":{"stringValue":"=444"}},
+                ]},
+                {"values":[
+                    {"userEnteredValue":{"stringValue":"aaa"}},
+                    {"userEnteredValue":{"stringValue":"bbb"}},
+                    {"userEnteredValue":{"stringValue":"ccc"}},
+                    {"userEnteredValue":{"stringValue":"ddd"}},
+                ]}
+              ]}]},
+              {"properties":{"title":"sheet 2"}},
+              {"properties":{"title":"sheet 3"}}
+          ]
+      }'
