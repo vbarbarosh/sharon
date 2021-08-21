@@ -52,12 +52,25 @@ async function main()
 async function home(req, res)
 {
     if (req.query.code) {
-        req.session.oauth2_tokens = await sharon_auth_step2(req.query.code);
-        const items = req.session.items;
-        delete req.session.items;
-        const tmp = await sharon_create(req.session.oauth2_tokens, items);
-        res.status(303).header('Location', tmp.spreadsheetUrl).send(tmp.spreadsheetUrl + '\n');
-        return;
+        try {
+            req.session.oauth2_tokens = await sharon_auth_step2(req.query.code);
+            const items = req.session.items;
+            delete req.session.items;
+            const tmp = await sharon_create(req.session.oauth2_tokens, items);
+            res.status(303).header('Location', tmp.spreadsheetUrl).send(tmp.spreadsheetUrl + '\n');
+            return;
+        }
+        catch (error) {
+            if (error && error.response && error.response.data) {
+                console.log(error.response.data);
+                res.status(400).send(error.response.data);
+            }
+            else {
+                console.log(error);
+                res.status(400).send('Failed\n');
+            }
+            return;
+        }
     }
     if (req.query.error) {
         res.send(`Error: ${req.query.error}\n`);
