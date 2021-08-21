@@ -84,10 +84,8 @@ The following will work:
 
     or
 
-    xdg-open http://127.0.0.1:3000
     docker run --env-file=.env --rm -p 3000:80 sharon
 
     or
 
-    xdg-open http://127.0.0.1:3000
     docker-compose up
