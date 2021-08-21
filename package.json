@@ -2,7 +2,7 @@
     "author": "Vladimir Barbarosh <vladimir.barbarosh@gmail.com>",
     "license": "MIT",
     "name": "@vbarbarosh/sharon",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Creates a Google Spreadsheet from data and returns url to navigate in a browser.",
     "keywords": [
         "spreadsheet"
